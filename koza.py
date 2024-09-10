@@ -1,10 +1,11 @@
 import time
 
 import requests
+import refreshToken
 
 token = ''
 
-def claimReklama():
+def claimReklama(token):
 
 
     url = "https://dev-api.goatsbot.xyz/missions/action/66db47e2ff88e4527783327e"
@@ -30,11 +31,18 @@ def claimReklama():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    return response
 
-    print(response.text)
 
 
 while True:
-    claimReklama()
+    response = claimReklama(token)
+
+    if response.status_code == 401:  # Если код ошибки 401
+        print("Токен истек, обновление токена...")
+        # Обновление токена
+        token = refreshToken.refreshToken()
+        continue
+
     print('Ждем 5 мин забираем монетки')
     time.sleep(60*5+5)
